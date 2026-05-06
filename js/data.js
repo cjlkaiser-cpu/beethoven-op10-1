@@ -1,78 +1,84 @@
 // Beethoven · Sonata n.º 5, Op. 10 n.º 1 · I. Allegro molto e con brio
 // Do menor · 2/2 · ♩=69 · Forma sonata
-// Edición: Breitkopf & Härtel / E.R.1
+// Análisis armónico: compases exactos según análisis académico
+//
+// ESTRUCTURA:
+//   Exposición  cc. 1–104    (Tema 1 · Puente · Tema 2 · Coda exp.)
+//   Desarrollo  cc. 105–168  (Zona 1 · Zona 2 · Zona 3 · Coda des.)
+//   Reexposición cc. 169–262 (Tema 1 · Puente · Tema 2)
+//   Coda final  cc. 263–fin
 
 const PASAJES = [
 
     // ── EXPOSICIÓN ───────────────────────────────────────────────────────────
     {
         numero: 1,
-        titulo: "Exposición · 1er Tema",
-        compases: "1–34",
+        titulo: "Exposición · Tema 1 y Puente",
+        compases: "1–33",
         imagen: "img/pagina_1.png",
-        texto: "Tema principal en Do menor. Motivo anacrúsico ff-p con acorde inicial sfz y respuesta piano. Beethoven opone energía y lirismo desde el compás 1. Atención al acorde de dominante con séptima en los bajos y a la digitación de las terceras de la mano derecha.",
+        texto: "Tema 1 en Do menor: dos periodos (antecedente–consecuente) con reafirmación armónica mediante la sensible Bdim en los cc. 10, 14 y 15. Finaliza con progresión I–II–V–I (ff) y silencio súbito que provoca una sensación de reposo. Este gesto da inicio al Puente, que se desarrolla en Mi♭ mayor (relativa mayor de Cm), con diálogo constante entre el I grado (Eb) y el V grado dominante (Bb7).",
         seccion: "exposicion"
     },
     {
         numero: 2,
-        titulo: "Exposición · 2º Tema y Codetta",
-        compases: "35–88",
+        titulo: "Exposición · Fin Puente y Tema 2",
+        compases: "34–66",
         imagen: "img/pagina_2.png",
-        texto: "Transición modulante hacia Mi♭ mayor. Segundo tema «p dolce» de carácter cantabile con acompañamiento en acordes ligados. Codetta que cierra la exposición con material del 1er tema y brillantes escalas. Fijar el carácter lírico frente al enérgico del 1er tema.",
+        texto: "El Puente continúa reafirmando Eb mediante Bb7. En el c. 56 cambia la intención rítmica (mayor velocidad) marcando el Fin del Puente y el inicio del Tema 2. Este segundo tema, en Mi♭ mayor (p dolce), actúa como gran consecuente del Tema 1. Se reafirma Eb con Bb como dominante y Ab como IV grado subdominante.",
+        seccion: "exposicion"
+    },
+    {
+        numero: 3,
+        titulo: "Exposición · Coda",
+        compases: "67–104",
+        imagen: "img/pagina_3.png",
+        texto: "Continuación del Tema 2: en los cc. 87 y 89 aparece F#dim como sensible del tercer grado de Eb (Gm), confirmando esta tonalidad. En el c. 93 comienza la Coda de la Exposición con Bb→Eb; toda la sección se mantiene en Eb. El diálogo armónico resuelve en el c. 104 sobre Ddim —sensible de Eb— dando por finalizada la Exposición e iniciando el Desarrollo.",
         seccion: "exposicion"
     },
 
     // ── DESARROLLO ───────────────────────────────────────────────────────────
     {
-        numero: 3,
-        titulo: "Desarrollo · 1ª fase",
-        compases: "89–134",
-        imagen: "img/pagina_3.png",
-        texto: "El desarrollo arranca con el motivo anacrúsico en tonos lejanos (Fa menor, Re♭ mayor). Trabajo imitativo entre las dos manos. Destaca el pasaje «con forza» con grandes saltos y la sección «p espress.» que prepara la llegada de la dominante de Do menor.",
+        numero: 4,
+        titulo: "Desarrollo · Zona 1 y Zona 2",
+        compases: "105–134",
+        imagen: "img/pagina_4.png",
+        texto: "El Desarrollo comienza con un intercambio modal de Cm a C mayor, que actúa como V grado de Fa menor (centro tonal del Desarrollo). La Zona 1 (cc. 105–117) retoma el Tema 1 de la Exposición en Fm. La Zona 2 (cc. 118–134) usa el Tema 2: Fm como centro tonal con Bb (IV) y C7 (V). En el c. 129 aparece F7 como función transitoria —dominante de Bb—, y en el c. 134 Ab7 funciona como dominante del VI grado (Db), dando fin a la Zona 2.",
         seccion: "desarrollo"
     },
     {
-        numero: 4,
-        titulo: "Desarrollo · 2ª fase",
-        compases: "135–162",
-        imagen: "img/pagina_4.png",
-        texto: "Segunda fase del desarrollo. Sección «cantabile» en el registro agudo con acompañamiento de corcheas en el bajo. Escritura «p legatissimo» que demanda una paleta sonora íntima. El crescendo final conduce a la reexposición.",
+        numero: 5,
+        titulo: "Desarrollo · Zona 3 y Coda",
+        compases: "135–168",
+        imagen: "img/pagina_5.png",
+        texto: "La Zona 3 (cc. 136–158) evoca el Puente de la Exposición. Su primer acorde es Db, napolitano de Cm. Se desarrolla Fm sin acordes ajenos a esa tonalidad. En el c. 158 aparece un acorde de G (V del V), que sirve como acorde pivote hacia Cm. La Coda del Desarrollo (cc. 159–168) recorre todos los grados de Do en el orden IV–III–II–I–VII–VI–V–IV–III–II–I–VII–V–IV–I–VII–I, concluyendo en el c. 168 e iniciando la Reexposición.",
         seccion: "desarrollo"
     },
 
     // ── REEXPOSICIÓN ─────────────────────────────────────────────────────────
     {
-        numero: 5,
-        titulo: "Reexposición · 1er Tema",
-        compases: "163–194",
-        imagen: "img/pagina_5.png",
-        texto: "El 1er tema regresa en Do menor con mayor densidad orquestal. Beethoven añade el «stacc. molto» y el «f subito» para aumentar el dramatismo. La sección «una corda / pp sottovoce» crea un contraste extremo antes del clímax fff.",
+        numero: 6,
+        titulo: "Reexposición · Tema 1 y Puente",
+        compases: "169–200",
+        imagen: "img/pagina_6.png",
+        texto: "La Reexposición comienza en el c. 169/180 con el Tema 1 en Do menor, esta vez con variaciones: se suprime la sección final de la Exposición (cc. 22–30). El Puente de la Reexposición comienza con un acorde de Db, napolitano de Cm —distinto al de la Exposición, que lo presentó en Eb—. En el c. 200 la progresión Bb7→Ebm→Ddim inicia el descenso hacia el Tema 2 reexpuesto.",
         seccion: "reexposicion"
     },
     {
-        numero: 6,
-        titulo: "Reexposición · 2º Tema",
-        compases: "195–222",
-        imagen: "img/pagina_6.png",
-        texto: "El 2º tema reaparece ahora en Do menor (no mayor), respetando el principio de reexposición beethoveniana. «Ped. come prima» y escritura «espr.» Textura progresivamente más densa con diseños ascendentes que preparan la coda.",
+        numero: 7,
+        titulo: "Reexposición · Tema 2",
+        compases: "201–232",
+        imagen: "img/pagina_7.png",
+        texto: "El Tema 2 reaparece ahora en Do menor (no en Eb como en la Exposición), cumpliendo el principio de reexposición en la tonalidad principal. Db actúa simultáneamente como napolitano de Cm y como dominante de Gb. La presencia de Fdim como intercambio modal acerca la armonía a Fa, desde donde se re-expone en la tonalidad del IV grado de Cm. La llegada a Cm se hace gradual gracias a la cercanía entre los acordes del camino armónico.",
         seccion: "reexposicion"
     },
 
-    // ── CODA ─────────────────────────────────────────────────────────────────
-    {
-        numero: 7,
-        titulo: "Coda · 1ª parte",
-        compases: "223–238",
-        imagen: "img/pagina_7.png",
-        texto: "La coda desarrolla el material anacrúsico con nuevas armonizaciones. Cresc. sostenido hacia el fff. El trino largo precede a la explosión ff final. Beethoven apura la tensión rítmica con sincopas y sforzandi en tiempos débiles.",
-        seccion: "coda"
-    },
+    // ── CODA FINAL ───────────────────────────────────────────────────────────
     {
         numero: 8,
-        titulo: "Coda · 2ª parte",
-        compases: "239–246",
+        titulo: "Coda Final",
+        compases: "233–fin",
         imagen: "img/pagina_8.png",
-        texto: "Conclusión del movimiento. Alternancia sf-p que recuerda el contraste inicial. Los últimos acordes en ff sobre la tónica Do menor cierran la forma con la misma energía del principio. El movimiento termina con una fermata sobre el acorde de tónica.",
+        texto: "En el c. 263 Beethoven retoma el gesto inicial de la obra (motivo anacrúsico) para dar paso a la Coda final. La Reexposición del Puente y del Tema 2 junto a la Coda reafirman definitivamente Do menor. El movimiento concluye con un contundente acorde de tónica en Cm sobre fermata.",
         seccion: "coda"
     }
 ];
