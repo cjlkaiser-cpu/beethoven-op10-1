@@ -10,135 +10,209 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎹</text></svg>">
     <meta name="theme-color" content="#0f172a">
     <title>Sonata Op. 10 n.º 1 · I. Allegro — Plan de Estudio</title>
-    <link rel="stylesheet" href="css/styles.css?v=3">
+    <link rel="stylesheet" href="css/styles.css?v=4">
 </head>
 <body>
-    <div class="app-container">
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <h1>Sonata Op. 10 n.º 1</h1>
-                <p class="composer">Ludwig van Beethoven</p>
-                <p class="subtitle">I. Allegro molto e con brio · Plan de Estudio</p>
-                <div class="progress-container">
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progressFill"></div>
-                    </div>
-                    <span class="progress-text" id="progressText">0/8 completados</span>
-                </div>
+<div class="app-container">
 
-                <div class="backup-buttons">
-                    <button class="backup-btn" id="exportBtn" title="Exportar backup">
-                        <span>📥</span> Exportar
-                    </button>
-                    <button class="backup-btn" id="importBtn" title="Importar backup">
-                        <span>📤</span> Importar
-                    </button>
-                    <input type="file" id="importInput" accept=".json" hidden>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h1>Sonata Op. 10 n.º 1</h1>
+            <p class="composer">Ludwig van Beethoven</p>
+            <p class="subtitle">I. Allegro molto e con brio · Plan de Estudio</p>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <span class="progress-text" id="progressText">0/8 completados</span>
+            </div>
+            <div class="backup-buttons">
+                <button class="backup-btn" id="exportBtn" title="Exportar backup"><span>📥</span> Exportar</button>
+                <button class="backup-btn" id="importBtn" title="Importar backup"><span>📤</span> Importar</button>
+                <input type="file" id="importInput" accept=".json" hidden>
+            </div>
+        </div>
+
+        <nav class="sections-nav" id="sectionsNav">
+            <div class="section-group">
+                <button class="section-header" data-section="exposicion">
+                    <span class="section-icon">▼</span>
+                    <span class="section-title">Exposición · Cm → Eb</span>
+                    <span class="section-count">cc. 1–104</span>
+                </button>
+                <div class="section-items" id="section-exposicion"></div>
+            </div>
+            <div class="section-group">
+                <button class="section-header" data-section="desarrollo">
+                    <span class="section-icon">▶</span>
+                    <span class="section-title">Desarrollo · Fm</span>
+                    <span class="section-count">cc. 105–168</span>
+                </button>
+                <div class="section-items collapsed" id="section-desarrollo"></div>
+            </div>
+            <div class="section-group">
+                <button class="section-header" data-section="reexposicion">
+                    <span class="section-icon">▶</span>
+                    <span class="section-title">Reexposición · Cm</span>
+                    <span class="section-count">cc. 169–232</span>
+                </button>
+                <div class="section-items collapsed" id="section-reexposicion"></div>
+            </div>
+            <div class="section-group">
+                <button class="section-header" data-section="coda">
+                    <span class="section-icon">▶</span>
+                    <span class="section-title">Coda Final · Cm</span>
+                    <span class="section-count">cc. 233–fin</span>
+                </button>
+                <div class="section-items collapsed" id="section-coda"></div>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Mobile menu -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <span></span><span></span><span></span>
+    </button>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <div class="pasaje-view" id="pasajeView">
+
+            <!-- Header — siempre visible -->
+            <div class="variation-header">
+                <div class="nav-buttons">
+                    <button class="nav-btn" id="prevBtn" title="Anterior">◀</button>
+                    <div class="title-block">
+                        <h2 class="variation-title" id="pasajeTitulo">Cargando…</h2>
+                        <span class="compases-badge" id="pasajeCompases"></span>
+                    </div>
+                    <button class="nav-btn" id="nextBtn" title="Siguiente">▶</button>
+                </div>
+                <div class="variation-status">
+                    <div class="stage-selector" id="stageSelector">
+                        <button class="stage-btn" data-stage="1">Leyendo</button>
+                        <button class="stage-btn" data-stage="2">Lento</button>
+                        <button class="stage-btn" data-stage="3">Tempo</button>
+                        <button class="stage-btn" data-stage="4">Dominado</button>
+                    </div>
+                    <span class="date-completed" id="dateCompleted"></span>
                 </div>
             </div>
 
-            <nav class="sections-nav" id="sectionsNav">
-                <div class="section-group">
-                    <button class="section-header" data-section="exposicion">
-                        <span class="section-icon">▼</span>
-                        <span class="section-title">Exposición · Cm → Eb</span>
-                        <span class="section-count">cc. 1–104</span>
-                    </button>
-                    <div class="section-items" id="section-exposicion"></div>
+            <!-- Tab Bar -->
+            <div class="pasaje-tabs">
+                <button class="pasaje-tab active" data-tab="referencia">Referencia</button>
+                <button class="pasaje-tab" data-tab="practica">Práctica</button>
+            </div>
+
+            <!-- ══════════════════════════════════════
+                 TAB: REFERENCIA
+                 ══════════════════════════════════════ -->
+            <div class="tab-panel" id="tab-referencia">
+
+                <!-- Partitura interactiva — MuseScore -->
+                <div class="musescore-section">
+                    <div class="ms-header">
+                        <h3>Partitura interactiva</h3>
+                        <a href="https://musescore.com/user/19710/scores/69303" target="_blank" class="ms-ext-link">Abrir en MuseScore ↗</a>
+                    </div>
+                    <p class="ms-meta">Ludwig van Beethoven · Sonata Op. 10 n.º 1 · I. Allegro molto e con brio</p>
+                    <div class="ms-embed">
+                        <iframe
+                            src="https://musescore.com/user/19710/scores/69303/embed"
+                            title="Beethoven Sonata Op. 10 No. 1 — MuseScore"
+                            frameborder="0"
+                            allow="autoplay; fullscreen"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
                 </div>
 
-                <div class="section-group">
-                    <button class="section-header" data-section="desarrollo">
-                        <span class="section-icon">▶</span>
-                        <span class="section-title">Desarrollo · Fm</span>
-                        <span class="section-count">cc. 105–168</span>
-                    </button>
-                    <div class="section-items collapsed" id="section-desarrollo"></div>
+                <!-- Análisis del pasaje -->
+                <div class="description-section">
+                    <h3>Análisis del pasaje</h3>
+                    <p id="pasajeDescripcion"></p>
                 </div>
 
-                <div class="section-group">
-                    <button class="section-header" data-section="reexposicion">
-                        <span class="section-icon">▶</span>
-                        <span class="section-title">Reexposición · Cm</span>
-                        <span class="section-count">cc. 169–232</span>
-                    </button>
-                    <div class="section-items collapsed" id="section-reexposicion"></div>
-                </div>
-
-                <div class="section-group">
-                    <button class="section-header" data-section="coda">
-                        <span class="section-icon">▶</span>
-                        <span class="section-title">Coda Final · Cm</span>
-                        <span class="section-count">cc. 233–fin</span>
-                    </button>
-                    <div class="section-items collapsed" id="section-coda"></div>
-                </div>
-            </nav>
-        </aside>
-
-        <!-- Mobile menu button -->
-        <button class="mobile-menu-btn" id="mobileMenuBtn">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-
-        <!-- Main Content -->
-        <main class="main-content" id="mainContent">
-            <div class="pasaje-view" id="pasajeView">
-                <!-- Header -->
-                <div class="variation-header">
-                    <div class="nav-buttons">
-                        <button class="nav-btn" id="prevBtn" title="Anterior">◀</button>
-                        <div class="title-block">
-                            <h2 class="variation-title" id="pasajeTitulo">Cargando…</h2>
-                            <span class="compases-badge" id="pasajeCompases"></span>
+                <!-- Brendel — colapsable -->
+                <div class="video-section">
+                    <button class="video-toggle" data-target="brendelBody" data-src="https://www.youtube.com/embed/PrhvseQ_K3A?rel=0">
+                        <div class="video-toggle-left">
+                            <span class="video-badge">▶</span>
+                            <div>
+                                <span class="video-toggle-title">Alfred Brendel</span>
+                                <span class="video-toggle-meta">Philips · 1995 · Grabación de referencia</span>
+                            </div>
                         </div>
-                        <button class="nav-btn" id="nextBtn" title="Siguiente">▶</button>
-                    </div>
-                    <div class="variation-status">
-                        <label class="checkbox-container">
-                            <input type="checkbox" id="completedCheckbox">
-                            <span class="checkmark"></span>
-                            <span class="checkbox-label">Estudiado</span>
-                        </label>
-                        <span class="date-completed" id="dateCompleted"></span>
+                        <span class="toggle-chevron">›</span>
+                    </button>
+                    <div class="video-body" id="brendelBody">
+                        <div class="yt-container"></div>
                     </div>
                 </div>
 
-                <!-- Reference Recording -->
-                <div class="reference-section">
-                    <h3>Grabación de referencia</h3>
-                    <p class="reference-meta">Alfred Brendel · Philips · 1995</p>
-                    <div class="yt-container">
-                        <iframe
-                            src="https://www.youtube.com/embed/PrhvseQ_K3A"
-                            title="Beethoven Sonata Op. 10 No. 1 — Alfred Brendel"
-                            frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen>
-                        </iframe>
+                <!-- Schiff — colapsable -->
+                <div class="video-section">
+                    <button class="video-toggle" data-target="schiffBody" data-src="https://www.youtube.com/embed/6U5kYy9c1RE?rel=0">
+                        <div class="video-toggle-left">
+                            <span class="video-badge analysis-badge">◆</span>
+                            <div>
+                                <span class="video-toggle-title">András Schiff — Análisis</span>
+                                <span class="video-toggle-meta">Wigmore Hall · BBC Radio 3 · 2004 · ~45–60 min</span>
+                            </div>
+                        </div>
+                        <span class="toggle-chevron">›</span>
+                    </button>
+                    <div class="video-body" id="schiffBody">
+                        <div class="yt-container"></div>
                     </div>
                 </div>
 
-                <!-- Schiff Analysis -->
-                <div class="reference-section analysis-section">
-                    <h3>Análisis · András Schiff</h3>
-                    <p class="reference-meta">Conferencia-recital · Wigmore Hall · BBC Radio 3 · 2004</p>
-                    <p class="analysis-intro">Schiff analiza en detalle la estructura, el carácter y los recursos compositivos de la sonata: forma, armonía, digitación histórica y diferencias entre ediciones. Aproximadamente 45–60 min.</p>
-                    <div class="yt-container">
-                        <iframe
-                            src="https://www.youtube.com/embed/6U5kYy9c1RE"
-                            title="Beethoven Sonata Op. 10 No. 1 — András Schiff lecture"
-                            frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen>
-                        </iframe>
+                <!-- Recursos externos -->
+                <div class="resources-section">
+                    <div class="resources-label">Recursos externos</div>
+                    <div class="resource-pills">
+                        <a href="https://imslp.org/wiki/Piano_Sonata_No.5%2C_Op.10_No.1_(Beethoven%2C_Ludwig_van)" target="_blank" class="resource-pill">IMSLP</a>
+                        <a href="https://musescore.com/user/19710/scores/69303" target="_blank" class="resource-pill">MuseScore</a>
+                        <a href="https://github.com/MarkGotham/When-in-Rome/tree/master/Corpus/Piano_Sonatas/Beethoven%2C_Ludwig_van/Op010_No1/1" target="_blank" class="resource-pill">When in Rome</a>
+                        <a href="https://kern.humdrum.org/cgi-bin/ksdata?file=sonata05-1.krn&l=users/craig/classical/beethoven/piano/sonata&format=info" target="_blank" class="resource-pill">KernScores</a>
+                        <a href="https://tuttitempi.com/#scoreId=U00000585501" target="_blank" class="resource-pill">TuttiTempi</a>
                     </div>
                 </div>
 
-                <!-- Metronome -->
+            </div><!-- /tab-referencia -->
+
+
+            <!-- ══════════════════════════════════════
+                 TAB: PRÁCTICA
+                 ══════════════════════════════════════ -->
+            <div class="tab-panel hidden" id="tab-practica">
+
+                <!-- Partitura anotable -->
+                <div class="manuscript-section">
+                    <h3>Partitura <span class="zoom-hint">— toca para ampliar</span></h3>
+                    <div class="annotation-toolbar" id="annotationToolbar">
+                        <button class="anno-btn active" id="annoPencil" title="Lápiz">✏</button>
+                        <button class="anno-btn" id="annoEraser" title="Goma">◻</button>
+                        <div class="anno-colors">
+                            <button class="anno-color-btn active" data-color="#dc2626" title="Rojo" style="background:#dc2626"></button>
+                            <button class="anno-color-btn" data-color="#1d4ed8" title="Azul" style="background:#1d4ed8"></button>
+                            <button class="anno-color-btn" data-color="#15803d" title="Verde" style="background:#15803d"></button>
+                            <button class="anno-color-btn" data-color="#d97706" title="Naranja" style="background:#d97706"></button>
+                        </div>
+                        <button class="anno-clear-btn" id="annoClear" title="Borrar anotaciones">✕</button>
+                        <button class="anno-btn anno-open-fs" id="annoOpenFs" title="Pantalla completa">⛶</button>
+                    </div>
+                    <div class="manuscript-container">
+                        <div class="score-annotation-wrapper">
+                            <img id="manuscriptImg" src="" alt="Partitura" title="Toca para ampliar">
+                            <canvas id="annotationCanvas" class="annotation-canvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Metrónomo -->
                 <div class="metronome-section">
                     <h3>Metrónomo</h3>
                     <div class="metronome-container">
@@ -147,8 +221,7 @@
                             <span class="metro-bpm" id="metroBpm">69</span>
                             <span class="metro-label">BPM ♩=</span>
                         </div>
-                        <input type="range" class="metro-slider" id="metroSlider"
-                               min="30" max="200" value="69">
+                        <input type="range" class="metro-slider" id="metroSlider" min="30" max="200" value="69">
                         <div class="metro-presets">
                             <button class="metro-preset" data-bpm="40">40</button>
                             <button class="metro-preset" data-bpm="52">52</button>
@@ -164,41 +237,7 @@
                     </div>
                 </div>
 
-                <!-- Score Image -->
-                <div class="manuscript-section">
-                    <h3>Partitura <span class="zoom-hint">— toca para ampliar</span></h3>
-                    <div class="annotation-toolbar" id="annotationToolbar">
-                        <button class="anno-btn active" id="annoPencil" title="Lápiz">✏</button>
-                        <button class="anno-btn" id="annoEraser" title="Goma">◻</button>
-                        <div class="anno-colors">
-                            <button class="anno-color-btn active" data-color="#dc2626" title="Rojo" style="background:#dc2626"></button>
-                            <button class="anno-color-btn" data-color="#1d4ed8" title="Azul" style="background:#1d4ed8"></button>
-                            <button class="anno-color-btn" data-color="#15803d" title="Verde" style="background:#15803d"></button>
-                            <button class="anno-color-btn" data-color="#d97706" title="Naranja" style="background:#d97706"></button>
-                        </div>
-                        <button class="anno-clear-btn" id="annoClear" title="Borrar anotaciones">✕</button>
-                    <button class="anno-btn anno-open-fs" id="annoOpenFs" title="Pantalla completa">⛶</button>
-                    </div>
-                    <div class="manuscript-container">
-                        <div class="score-annotation-wrapper">
-                            <img id="manuscriptImg" src="" alt="Partitura" title="Toca para ampliar">
-                            <canvas id="annotationCanvas" class="annotation-canvas"></canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Fullscreen overlay -->
-                <div class="score-overlay" id="scoreOverlay">
-                    <img id="scoreOverlayImg" src="" alt="Partitura ampliada">
-                </div>
-
-                <!-- Description -->
-                <div class="description-section">
-                    <h3>Análisis</h3>
-                    <p id="pasajeDescripcion"></p>
-                </div>
-
-                <!-- Recording Section -->
+                <!-- Mis Grabaciones -->
                 <div class="recording-section">
                     <h3>Mis Grabaciones</h3>
                     <div class="recording-container">
@@ -213,27 +252,30 @@
                             </button>
                             <span class="audio-separator">o</span>
                             <input type="file" id="audioInput" accept="audio/*" hidden>
-                            <button class="upload-btn" id="uploadBtn">
-                                <span class="upload-icon">📁</span>
-                                <span>Subir archivo</span>
-                            </button>
+                            <input type="file" id="videoInput" accept="video/*" hidden>
+                            <div class="upload-group">
+                                <button class="upload-btn" id="uploadBtn">
+                                    <span class="upload-icon">🎵</span>
+                                    <span>Audio</span>
+                                </button>
+                                <button class="upload-btn upload-btn-video" id="uploadVideoBtn">
+                                    <span class="upload-icon">🎬</span>
+                                    <span>Vídeo</span>
+                                </button>
+                            </div>
                         </div>
-                        <div class="recorder-active" id="recorderActive" style="display: none;">
+                        <div class="recorder-active" id="recorderActive" style="display:none">
                             <div class="recording-indicator">
                                 <span class="rec-dot"></span>
                                 <span class="rec-text">REC</span>
                                 <span class="rec-time" id="recTime">00:00</span>
                             </div>
-                            <button class="stop-btn" id="stopBtn">
-                                <span>■</span> Parar
-                            </button>
+                            <button class="stop-btn" id="stopBtn"><span>■</span> Parar</button>
                         </div>
-                        <!-- Cuenta atrás antes de grabar vídeo -->
-                        <div class="countdown-overlay" id="countdownOverlay" style="display: none;">
+                        <div class="countdown-overlay" id="countdownOverlay" style="display:none">
                             <span class="countdown-number" id="countdownNumber">3</span>
                         </div>
-                        <!-- Webcam preview durante grabación de vídeo -->
-                        <div class="video-recorder-active" id="videoRecorderActive" style="display: none;">
+                        <div class="video-recorder-active" id="videoRecorderActive" style="display:none">
                             <div class="video-recorder-layout">
                                 <div class="webcam-wrapper">
                                     <video id="webcamPreview" autoplay muted playsinline class="webcam-preview"></video>
@@ -247,16 +289,14 @@
                                 <span class="rec-text">REC</span>
                                 <span class="rec-time" id="recVideoTime">00:00</span>
                             </div>
-                            <button class="stop-btn" id="stopVideoBtn">
-                                <span>■</span> Parar
-                            </button>
+                            <button class="stop-btn" id="stopVideoBtn"><span>■</span> Parar</button>
                         </div>
                         <div class="recordings-list" id="recordingsList"></div>
                         <div class="recordings-list" id="videosList"></div>
                     </div>
                 </div>
 
-                <!-- My Score Photo Section -->
+                <!-- Mi Partitura Anotada -->
                 <div class="score-photo-section">
                     <h3>Mi Partitura Anotada</h3>
                     <div class="score-photo-container">
@@ -268,24 +308,47 @@
                             </button>
                             <p class="upload-hint">JPG, PNG, HEIC…</p>
                         </div>
-                        <div class="photo-preview-container" id="photoPreviewContainer" style="display: none;">
+                        <div class="photo-preview-container" id="photoPreviewContainer" style="display:none">
                             <img id="photoPreview" src="" alt="Mi partitura anotada">
                             <button class="remove-photo-btn" id="removePhotoBtn" title="Eliminar foto">✕</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Notes Section -->
+                <!-- Mis Notas + Diario -->
                 <div class="notes-section">
                     <h3>Mis Notas</h3>
                     <textarea id="notesTextarea" placeholder="Digitación, fraseo, pedal, dificultades técnicas, ideas de interpretación…"></textarea>
                     <div class="notes-footer">
                         <span class="autosave-indicator" id="autosaveIndicator">Guardado automático</span>
                     </div>
+
+                    <div class="diary-section">
+                        <div class="diary-header">
+                            <span class="diary-label">Diario de práctica</span>
+                            <button class="diary-add-btn" id="diaryAddBtn">+ Añadir entrada</button>
+                        </div>
+                        <div class="diary-new" id="diaryNew" style="display:none">
+                            <textarea class="diary-textarea" id="diaryTextarea" placeholder="¿Qué has trabajado hoy? Dificultades, logros, próximo objetivo…"></textarea>
+                            <div class="diary-new-actions">
+                                <button class="diary-cancel-btn" id="diaryCancelBtn">Cancelar</button>
+                                <button class="diary-save-btn" id="diarySaveBtn">Guardar</button>
+                            </div>
+                        </div>
+                        <div class="diary-entries" id="diaryEntries"></div>
+                    </div>
                 </div>
+
+            </div><!-- /tab-practica -->
+
+            <!-- Score fullscreen overlay (fixed, fuera de los tabs) -->
+            <div class="score-overlay" id="scoreOverlay">
+                <img id="scoreOverlayImg" src="" alt="Partitura ampliada">
             </div>
-        </main>
-    </div>
+
+        </div>
+    </main>
+</div>
 
 <!-- Fullscreen annotation overlay -->
 <div class="anno-fullscreen" id="annoFullscreen">
@@ -308,7 +371,8 @@
         </div>
     </div>
 </div>
-    <script src="js/data.js?v=1"></script>
-    <script src="js/app.js?v=5"></script>
+
+<script src="js/data.js?v=1"></script>
+<script src="js/app.js?v=6"></script>
 </body>
 </html>

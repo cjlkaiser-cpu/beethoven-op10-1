@@ -3,7 +3,10 @@
 // ==========================================
 
 const DB_NAME = 'BeethovenOp10DB';
-const DB_VERSION = 4;
+const DB_VERSION = 5;
+
+const STAGE_ICONS  = ['○', '◔', '◑', '◕', '●'];
+const STAGE_COLORS = ['', '#fbbf24', '#fb923c', '#a5b4fc', '#4ade80'];
 let db = null;
 
 function initDB() {
@@ -42,6 +45,10 @@ function initDB() {
             if (!database.objectStoreNames.contains('annotations')) {
                 database.createObjectStore('annotations', { keyPath: 'id' });
             }
+            if (!database.objectStoreNames.contains('practiceLog')) {
+                const logStore = database.createObjectStore('practiceLog', { keyPath: 'id', autoIncrement: true });
+                logStore.createIndex('pasajeId', 'pasajeId', { unique: false });
+            }
         };
     });
 }
@@ -65,10 +72,14 @@ function loadStudyDataFromDB() {
         request.onsuccess = () => {
             const data = {};
             request.result.forEach(item => {
+                const stage = item.stage !== undefined
+                    ? item.stage
+                    : (item.completed ? 4 : 0);
                 data[item.id] = {
-                    completed: item.completed || false,
+                    completed: stage === 4,
                     completedDate: item.completedDate || null,
-                    notes: item.notes || ''
+                    notes: item.notes || '',
+                    stage
                 };
             });
             resolve(data);
@@ -790,14 +801,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         elements.pasajeCompases = document.getElementById('pasajeCompases');
         elements.manuscriptImg = document.getElementById('manuscriptImg');
         elements.pasajeDescripcion = document.getElementById('pasajeDescripcion');
-        elements.completedCheckbox = document.getElementById('completedCheckbox');
         elements.dateCompleted = document.getElementById('dateCompleted');
         elements.notesTextarea = document.getElementById('notesTextarea');
         elements.autosaveIndicator = document.getElementById('autosaveIndicator');
         elements.audioOptions = document.getElementById('audioOptions');
         elements.recordBtn = document.getElementById('recordBtn');
         elements.uploadBtn = document.getElementById('uploadBtn');
+        elements.uploadVideoBtn = document.getElementById('uploadVideoBtn');
         elements.audioInput = document.getElementById('audioInput');
+        elements.videoInput = document.getElementById('videoInput');
         elements.recorderActive = document.getElementById('recorderActive');
         elements.recTime = document.getElementById('recTime');
         elements.stopBtn = document.getElementById('stopBtn');
@@ -830,7 +842,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         for (let i = 0; i < PASAJES.length; i++) {
             if (!studyData[i]) {
-                studyData[i] = { completed: false, completedDate: null, notes: '' };
+                studyData[i] = { completed: false, completedDate: null, notes: '', stage: 0 };
             }
         }
 
@@ -843,6 +855,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         setupAnnotationCanvas();
         setupFullscreenAnnotation();
         setupTempoSaveBtn();
+        setupTabs();
+        setupVideoToggles();
+        setupStageSelector();
+        setupDiary();
         updateProgress();
 
     } catch (error) {
@@ -868,14 +884,16 @@ function buildSidebar() {
     Object.keys(sections).forEach(sectionId => {
         const container = document.getElementById(sectionId);
         if (container) {
-            container.innerHTML = sections[sectionId].map(p => `
-                <div class="variation-item ${studyData[p.index]?.completed ? 'completed' : ''}"
-                     data-index="${p.index}">
-                    <span class="item-check">${studyData[p.index]?.completed ? '✓' : '○'}</span>
+            container.innerHTML = sections[sectionId].map(p => {
+                const stage = studyData[p.index]?.stage || 0;
+                const color = STAGE_COLORS[stage] ? `color:${STAGE_COLORS[stage]}` : '';
+                return `
+                <div class="variation-item ${stage === 4 ? 'completed' : ''}" data-index="${p.index}">
+                    <span class="item-check" style="${color}">${STAGE_ICONS[stage]}</span>
                     <span class="item-number">${p.numero}</span>
                     <span class="item-title">${p.titulo}</span>
-                </div>
-            `).join('');
+                </div>`;
+            }).join('');
         }
     });
 
@@ -906,16 +924,16 @@ async function loadPasaje(index) {
     elements.pasajeCompases.textContent = `cc. ${pasaje.compases}`;
     elements.manuscriptImg.src = pasaje.imagen;
     elements.manuscriptImg.alt = `Partitura – ${pasaje.titulo}`;
+    const scoreThumbnail = document.getElementById('scoreThumbnail');
+    if (scoreThumbnail) scoreThumbnail.src = pasaje.imagen;
     elements.pasajeDescripcion.textContent = pasaje.texto;
     elements.pasajeDescripcion.closest('.description-section').style.display =
         pasaje.texto ? 'block' : 'none';
 
-    elements.completedCheckbox.checked = data.completed || false;
-    elements.dateCompleted.textContent = data.completedDate
-        ? `Completado: ${data.completedDate}`
-        : '';
+    renderStageSelector(data.stage || 0);
 
     elements.notesTextarea.value = data.notes || '';
+    renderDiaryEntries(index);
 
     if (currentlyPlayingAudio) {
         currentlyPlayingAudio.pause();
@@ -983,18 +1001,6 @@ function setupEventListeners() {
         if (currentPasaje < PASAJES.length - 1) loadPasaje(currentPasaje + 1);
     });
 
-    elements.completedCheckbox.addEventListener('change', async (e) => {
-        studyData[currentPasaje].completed = e.target.checked;
-        studyData[currentPasaje].completedDate = e.target.checked
-            ? new Date().toLocaleDateString('es-ES')
-            : null;
-        elements.dateCompleted.textContent = studyData[currentPasaje].completedDate
-            ? `Completado: ${studyData[currentPasaje].completedDate}`
-            : '';
-        await saveStudyDataToDB(currentPasaje, studyData[currentPasaje]);
-        updateSidebarItem(currentPasaje);
-        updateProgress();
-    });
 
     let notesTimeout;
     elements.notesTextarea.addEventListener('input', () => {
@@ -1027,6 +1033,18 @@ function setupEventListeners() {
             elements.audioInput.value = '';
             showNotification('Audio guardado', 'success');
         }
+    });
+
+    elements.uploadVideoBtn.addEventListener('click', () => elements.videoInput.click());
+    elements.videoInput.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const sizeMB = (file.size / 1024 / 1024).toFixed(0);
+        showNotification(`Guardando vídeo (${sizeMB} MB)…`, 'info');
+        await saveVideoToDB(currentPasaje, file);
+        await renderVideosList(currentPasaje);
+        elements.videoInput.value = '';
+        showNotification('Vídeo guardado', 'success');
     });
 
     elements.photoUploadBtn.addEventListener('click', () => elements.photoInput.click());
@@ -1068,27 +1086,32 @@ function setupEventListeners() {
     elements.mobileMenuBtn.addEventListener('click', toggleMobileMenu);
 
     document.addEventListener('keydown', (e) => {
-        if (e.target.tagName === 'TEXTAREA') return;
+        if (['TEXTAREA', 'INPUT'].includes(e.target.tagName)) return;
         if (e.key === 'ArrowLeft' && currentPasaje > 0) loadPasaje(currentPasaje - 1);
         else if (e.key === 'ArrowRight' && currentPasaje < PASAJES.length - 1) loadPasaje(currentPasaje + 1);
+        else if (e.key === ' ') { e.preventDefault(); document.getElementById('metroBtn')?.click(); }
     });
 }
 
 function updateSidebarItem(index) {
     const item = document.querySelector(`.variation-item[data-index="${index}"]`);
-    if (item) {
-        const isCompleted = studyData[index]?.completed;
-        item.classList.toggle('completed', isCompleted);
-        item.querySelector('.item-check').textContent = isCompleted ? '✓' : '○';
+    if (!item) return;
+    const stage = studyData[index]?.stage || 0;
+    item.classList.toggle('completed', stage === 4);
+    const check = item.querySelector('.item-check');
+    if (check) {
+        check.textContent = STAGE_ICONS[stage];
+        check.style.color = STAGE_COLORS[stage] || '';
     }
 }
 
 function updateProgress() {
-    const completed = Object.values(studyData).filter(d => d.completed).length;
+    const dominated = Object.values(studyData).filter(d => (d.stage || 0) === 4).length;
+    const inProgress = Object.values(studyData).filter(d => (d.stage || 0) > 0 && (d.stage || 0) < 4).length;
     const total = PASAJES.length;
-    const percentage = (completed / total) * 100;
+    const percentage = ((dominated + inProgress * 0.5) / total) * 100;
     elements.progressFill.style.width = `${percentage}%`;
-    elements.progressText.textContent = `${completed}/${total} completados`;
+    elements.progressText.textContent = `${dominated}/${total} dominados`;
 }
 
 let overlay = null;
@@ -1592,4 +1615,220 @@ function setupFullscreenAnnotation() {
 
     fsCanvas.addEventListener('pointerup', () => { fsDrawing = false; });
     fsCanvas.addEventListener('pointercancel', () => { fsDrawing = false; });
+}
+
+// ==========================================
+// STAGE SELECTOR
+// ==========================================
+
+function renderStageSelector(stage) {
+    document.querySelectorAll('.stage-btn').forEach(btn => {
+        const s = parseInt(btn.dataset.stage);
+        btn.classList.remove('active', 'passed');
+        if (s === stage) btn.classList.add('active');
+        else if (s < stage) btn.classList.add('passed');
+    });
+    elements.dateCompleted.textContent = stage === 4 && studyData[currentPasaje]?.completedDate
+        ? `Dominado: ${studyData[currentPasaje].completedDate}`
+        : '';
+}
+
+function setupStageSelector() {
+    document.querySelectorAll('.stage-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const newStage = parseInt(btn.dataset.stage);
+            const prev = studyData[currentPasaje].stage || 0;
+            const stage = newStage === prev ? 0 : newStage;
+
+            studyData[currentPasaje].stage = stage;
+            studyData[currentPasaje].completed = stage === 4;
+            if (stage === 4 && !studyData[currentPasaje].completedDate) {
+                studyData[currentPasaje].completedDate = new Date().toLocaleDateString('es-ES');
+            } else if (stage < 4) {
+                studyData[currentPasaje].completedDate = null;
+            }
+
+            await saveStudyDataToDB(currentPasaje, studyData[currentPasaje]);
+            renderStageSelector(stage);
+            updateSidebarItem(currentPasaje);
+            updateProgress();
+        });
+    });
+}
+
+// ==========================================
+// DIARIO DE PRÁCTICA
+// ==========================================
+
+function saveDiaryEntry(pasajeId, text) {
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(['practiceLog'], 'readwrite');
+        const req = tx.objectStore('practiceLog').add({
+            pasajeId,
+            text,
+            date: new Date().toISOString()
+        });
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+    });
+}
+
+function getDiaryEntries(pasajeId) {
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(['practiceLog'], 'readonly');
+        const req = tx.objectStore('practiceLog').index('pasajeId').getAll(pasajeId);
+        req.onsuccess = () => resolve(req.result.sort((a, b) => new Date(b.date) - new Date(a.date)));
+        req.onerror = () => reject(req.error);
+    });
+}
+
+function deleteDiaryEntry(id) {
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(['practiceLog'], 'readwrite');
+        const req = tx.objectStore('practiceLog').delete(id);
+        req.onsuccess = () => resolve();
+        req.onerror = () => reject(req.error);
+    });
+}
+
+async function renderDiaryEntries(pasajeId) {
+    const container = document.getElementById('diaryEntries');
+    if (!container || !db) return;
+    let entries;
+    try { entries = await getDiaryEntries(pasajeId); }
+    catch { container.innerHTML = ''; return; }
+
+    if (entries.length === 0) {
+        container.innerHTML = '<p class="diary-empty">Sin entradas aún.</p>';
+        return;
+    }
+
+    container.innerHTML = entries.map(entry => {
+        const d = new Date(entry.date);
+        const dateStr = d.toLocaleDateString('es-ES', {
+            weekday: 'short', day: 'numeric', month: 'short',
+            hour: '2-digit', minute: '2-digit'
+        });
+        const escaped = entry.text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return `
+        <div class="diary-entry">
+            <div class="diary-entry-header">
+                <span class="diary-entry-date">${dateStr}</span>
+                <button class="diary-delete-btn" data-id="${entry.id}" title="Eliminar">✕</button>
+            </div>
+            <p class="diary-entry-text">${escaped}</p>
+        </div>`;
+    }).join('');
+
+    container.querySelectorAll('.diary-delete-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            if (confirm('¿Eliminar esta entrada?')) {
+                await deleteDiaryEntry(parseInt(btn.dataset.id));
+                await renderDiaryEntries(pasajeId);
+            }
+        });
+    });
+}
+
+function setupDiary() {
+    const addBtn     = document.getElementById('diaryAddBtn');
+    const newArea    = document.getElementById('diaryNew');
+    const textarea   = document.getElementById('diaryTextarea');
+    const saveBtn    = document.getElementById('diarySaveBtn');
+    const cancelBtn  = document.getElementById('diaryCancelBtn');
+    if (!addBtn) return;
+
+    const open  = () => { newArea.style.display = 'block'; textarea.focus(); addBtn.style.display = 'none'; };
+    const close = () => { newArea.style.display = 'none'; textarea.value = ''; addBtn.style.display = ''; };
+
+    addBtn.addEventListener('click', open);
+    cancelBtn.addEventListener('click', close);
+
+    saveBtn.addEventListener('click', async () => {
+        const text = textarea.value.trim();
+        if (!text) return;
+        await saveDiaryEntry(currentPasaje, text);
+        close();
+        await renderDiaryEntries(currentPasaje);
+        showNotification('Entrada guardada', 'success');
+    });
+
+    textarea.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) saveBtn.click();
+        if (e.key === 'Escape') close();
+    });
+}
+
+// ==========================================
+// TABS
+// ==========================================
+
+let currentTab = 'referencia';
+
+function switchTab(name) {
+    currentTab = name;
+    document.querySelectorAll('.pasaje-tab').forEach(t =>
+        t.classList.toggle('active', t.dataset.tab === name)
+    );
+    document.querySelectorAll('.tab-panel').forEach(p =>
+        p.classList.toggle('hidden', p.id !== `tab-${name}`)
+    );
+    if (name === 'practica') {
+        requestAnimationFrame(resizeAnnotationCanvas);
+    }
+}
+
+function resizeAnnotationCanvas() {
+    const canvas = document.getElementById('annotationCanvas');
+    const img = document.getElementById('manuscriptImg');
+    if (!canvas || !img || !annoCtx || img.offsetWidth === 0) return;
+    const prev = document.createElement('canvas');
+    prev.width = canvas.width;
+    prev.height = canvas.height;
+    prev.getContext('2d').drawImage(canvas, 0, 0);
+    canvas.width = img.offsetWidth;
+    canvas.height = img.offsetHeight;
+    annoCtx.drawImage(prev, 0, 0, canvas.width, canvas.height);
+}
+
+function setupTabs() {
+    document.querySelectorAll('.pasaje-tab').forEach(tab => {
+        tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+    });
+}
+
+// ==========================================
+// VÍDEOS COLAPSABLES (lazy iframe)
+// ==========================================
+
+function setupVideoToggles() {
+    document.querySelectorAll('.video-toggle').forEach(toggle => {
+        const bodyId = toggle.dataset.target;
+        const body = document.getElementById(bodyId);
+        if (!body) return;
+
+        toggle.addEventListener('click', () => {
+            const isOpen = body.classList.contains('open');
+            const ytContainer = body.querySelector('.yt-container');
+
+            if (isOpen) {
+                body.classList.remove('open');
+                toggle.classList.remove('open');
+                // Descarga el iframe para detener audio/vídeo
+                if (ytContainer) ytContainer.innerHTML = '';
+            } else {
+                body.classList.add('open');
+                toggle.classList.add('open');
+                // Inyecta el iframe solo la primera vez (o si fue descargado)
+                if (ytContainer && !ytContainer.querySelector('iframe')) {
+                    ytContainer.innerHTML = `<iframe
+                        src="${toggle.dataset.src}"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                    </iframe>`;
+                }
+            }
+        });
+    });
 }

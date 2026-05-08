@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test — Score + MIDI embeds</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: system-ui, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        h1 { font-size: 1.4rem; margin-bottom: 0.4rem; color: #f8fafc; }
+        .subtitle { color: #94a3b8; font-size: 0.9rem; margin-bottom: 2.5rem; }
+
+        .test-block {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .test-block h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #7dd3fc;
+            margin-bottom: 0.3rem;
+        }
+        .test-block .meta {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-bottom: 1rem;
+        }
+        .verdict {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        .verdict label { font-size: 0.8rem; color: #94a3b8; align-self: center; }
+        .verdict button {
+            padding: 0.3rem 0.9rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .btn-ok  { background: #16a34a; color: white; }
+        .btn-ko  { background: #dc2626; color: white; }
+        .btn-mid { background: #d97706; color: white; }
+        .result-text {
+            font-size: 0.85rem;
+            color: #fbbf24;
+            margin-top: 0.6rem;
+            min-height: 1.2em;
+        }
+
+        iframe {
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            background: #0f172a;
+        }
+
+        .note {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-top: 0.8rem;
+            line-height: 1.5;
+        }
+        .note strong { color: #94a3b8; }
+    </style>
+</head>
+<body>
+    <h1>Beethoven Op. 10 n.º 1 — Test de embeds</h1>
+    <p class="subtitle">Experimentos antes de tocar la app principal · rama experiment/midi-score</p>
+
+    <!-- TEST 1: MuseScore embed -->
+    <div class="test-block">
+        <h2>A · MuseScore embed</h2>
+        <p class="meta">Partitura interactiva + playback oficial · musescore.com/user/19710/scores/69303</p>
+
+        <iframe
+            src="https://musescore.com/user/19710/scores/69303/embed"
+            height="480"
+            allowfullscreen
+            allow="autoplay; fullscreen">
+        </iframe>
+
+        <div class="verdict">
+            <label>¿Funciona?</label>
+            <button class="btn-ok"  onclick="log('A','✅ Funciona — partitura + playback visible')">Sí, todo bien</button>
+            <button class="btn-mid" onclick="log('A','⚠️ Parcial — carga pero playback bloqueado/paywall')">Parcial</button>
+            <button class="btn-ko"  onclick="log('A','❌ No carga / iframe bloqueado')">No carga</button>
+        </div>
+        <p class="result-text" id="result-A"></p>
+        <p class="note">
+            <strong>Lo que nos da si funciona:</strong> partitura sincronizada con playback, zoom, navegación por compases.<br>
+            <strong>Lo que no da:</strong> control de tempo, selección de pasajes, integración con la app.
+        </p>
+    </div>
+
+    <!-- TEST 2: TuttiTempi embed -->
+    <div class="test-block">
+        <h2>B · TuttiTempi embed</h2>
+        <p class="meta">Partitura scrolling + grabaciones históricas · tuttitempi.com/#scoreId=U00000585501</p>
+
+        <iframe
+            src="https://tuttitempi.com/#scoreId=U00000585501"
+            height="520"
+            allowfullscreen
+            allow="autoplay; fullscreen">
+        </iframe>
+
+        <div class="verdict">
+            <label>¿Funciona?</label>
+            <button class="btn-ok"  onclick="log('B','✅ Funciona — partitura scrolling + audio visible')">Sí, todo bien</button>
+            <button class="btn-mid" onclick="log('B','⚠️ Parcial — carga la web pero no embebida correctamente')">Parcial</button>
+            <button class="btn-ko"  onclick="log('B','❌ No carga / X-Frame-Options bloquea el iframe')">No carga</button>
+        </div>
+        <p class="result-text" id="result-B"></p>
+        <p class="note">
+            <strong>Lo que nos da si funciona:</strong> scroll automático sincronizado con varias interpretaciones reales.<br>
+            <strong>Lo que no da:</strong> control de tempo, selección de pasajes.
+        </p>
+    </div>
+
+    <!-- TEST 3: IMSLP direct link (fallback) -->
+    <div class="test-block">
+        <h2>C · Link IMSLP como fallback</h2>
+        <p class="meta">Si los embeds no convencen — abrir en nueva pestaña</p>
+        <p style="margin-bottom:1rem; font-size:0.9rem; color:#94a3b8;">
+            No es un embed, pero sería un enlace en la app a la partitura libre en IMSLP.<br>
+            Útil como recurso secundario siempre.
+        </p>
+        <a href="https://imslp.org/wiki/Piano_Sonata_No.5%2C_Op.10_No.1_(Beethoven%2C_Ludwig_van)"
+           target="_blank"
+           style="display:inline-block; background:#2563eb; color:white; padding:0.5rem 1.2rem;
+                  border-radius:8px; text-decoration:none; font-size:0.9rem;">
+            Abrir IMSLP →
+        </a>
+        <p class="note" style="margin-top:0.8rem;">
+            <strong>Conclusión esperada:</strong> incluir siempre como enlace en la sección de recursos de cada pasaje.
+        </p>
+    </div>
+
+    <!-- Resumen -->
+    <div class="test-block" style="border: 1px solid #334155;">
+        <h2>Resumen del test</h2>
+        <p class="meta">Anota aquí lo que has observado</p>
+        <div id="summary" style="font-size:0.85rem; line-height:1.8; color:#94a3b8;">
+            (Pulsa los botones de veredicto arriba para ir anotando)
+        </div>
+        <p class="note" style="margin-top:1rem;">
+            <strong>Próximo paso si A funciona:</strong> integrar MuseScore en la app con un iframe colapsable por pasaje.<br>
+            <strong>Próximo paso si A falla:</strong> valorar OSMD + MusicXML local para tener control de tempo real.
+        </p>
+    </div>
+
+    <script>
+        const results = {};
+        function log(id, msg) {
+            results[id] = msg;
+            document.getElementById('result-' + id).textContent = msg;
+            // update summary
+            const lines = Object.entries(results).map(([k,v]) => `<b>${k}:</b> ${v}`);
+            document.getElementById('summary').innerHTML = lines.join('<br>') || '(sin resultados aún)';
+        }
+    </script>
+</body>
+</html>

@@ -715,6 +715,21 @@ body {
     background-color: var(--accent-hover);
 }
 
+.upload-group {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.upload-btn-video {
+    background-color: rgba(59, 130, 246, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.4);
+    color: #93c5fd;
+}
+
+.upload-btn-video:hover {
+    background-color: rgba(59, 130, 246, 0.3);
+}
+
 .upload-icon {
     font-size: 1.2rem;
 }
@@ -1490,4 +1505,534 @@ body {
 
 .anno-fs-done:hover {
     background: var(--accent-hover);
+}
+
+/* ==========================================
+   TABS REFERENCIA / PRÁCTICA
+   ========================================== */
+
+.pasaje-tabs {
+    display: flex;
+    background-color: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: 0.3rem;
+    gap: 0.25rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border-color);
+}
+
+.pasaje-tab {
+    flex: 1;
+    padding: 0.6rem 1rem;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius);
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.18s, color 0.18s, box-shadow 0.18s;
+    font-family: 'Inter', sans-serif;
+}
+
+.pasaje-tab:hover:not(.active) {
+    background-color: var(--bg-tertiary);
+    color: var(--text-secondary);
+}
+
+.pasaje-tab.active {
+    background-color: var(--accent);
+    color: #fff;
+    box-shadow: 0 2px 10px rgba(99, 102, 241, 0.35);
+}
+
+.tab-panel.hidden {
+    display: none;
+}
+
+/* ==========================================
+   MUSESCORE SECTION
+   ========================================== */
+
+.musescore-section {
+    background-color: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border-color);
+}
+
+.ms-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.3rem;
+}
+
+.musescore-section h3 {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0;
+}
+
+.musescore-section h3::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 0.75em;
+    background-color: var(--accent);
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.ms-ext-link {
+    font-size: 0.73rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+    letter-spacing: 0.02em;
+}
+
+.ms-ext-link:hover {
+    color: var(--accent-light);
+}
+
+.ms-meta {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-bottom: 1rem;
+}
+
+.ms-embed {
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    background: #1a1a2e;
+}
+
+.ms-embed iframe {
+    width: 100%;
+    height: 520px;
+    display: block;
+    border: none;
+}
+
+/* ==========================================
+   COLLAPSIBLE VIDEO SECTIONS
+   ========================================== */
+
+.video-section {
+    background-color: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    margin-bottom: 1rem;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.video-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background-color 0.15s;
+    text-align: left;
+    gap: 0.75rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.video-toggle:hover {
+    background-color: rgba(255,255,255,0.03);
+}
+
+.video-toggle.open {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.video-toggle-left {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.video-badge {
+    width: 34px;
+    height: 34px;
+    background-color: rgba(220, 38, 38, 0.1);
+    border: 1px solid rgba(220, 38, 38, 0.25);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    color: #f87171;
+    flex-shrink: 0;
+}
+
+.video-badge.analysis-badge {
+    background-color: rgba(99, 102, 241, 0.1);
+    border-color: rgba(99, 102, 241, 0.25);
+    color: var(--accent-light);
+    font-size: 0.6rem;
+}
+
+.video-toggle-title {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.3;
+}
+
+.video-toggle-meta {
+    display: block;
+    font-size: 0.73rem;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-top: 0.1rem;
+}
+
+.toggle-chevron {
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    transition: transform 0.22s ease;
+    flex-shrink: 0;
+    line-height: 1;
+    font-style: normal;
+}
+
+.video-toggle.open .toggle-chevron {
+    transform: rotate(90deg);
+}
+
+.video-body {
+    display: none;
+    padding: 1.25rem;
+}
+
+.video-body.open {
+    display: block;
+}
+
+/* ==========================================
+   RESOURCES SECTION
+   ========================================== */
+
+.resources-section {
+    margin-bottom: 0.5rem;
+    padding-top: 0.75rem;
+}
+
+.resources-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.resources-label::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 0.75em;
+    background-color: var(--accent);
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.resource-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+}
+
+.resource-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3rem 0.8rem;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: border-color 0.15s, color 0.15s, background-color 0.15s;
+    letter-spacing: 0.02em;
+}
+
+.resource-pill:hover {
+    background-color: rgba(99, 102, 241, 0.08);
+    border-color: rgba(99, 102, 241, 0.4);
+    color: var(--accent-light);
+}
+
+/* ==========================================
+   RESPONSIVE TABS
+   ========================================== */
+
+@media (max-width: 768px) {
+    .ms-embed iframe {
+        height: 380px;
+    }
+
+    .pasaje-tab {
+        font-size: 0.65rem;
+        padding: 0.55rem 0.5rem;
+        letter-spacing: 0.06em;
+    }
+}
+
+/* ==========================================
+   STAGE SELECTOR
+   ========================================== */
+
+.variation-status {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.stage-selector {
+    display: flex;
+    gap: 0.2rem;
+    background-color: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: 0.25rem;
+    border: 1px solid var(--border-color);
+}
+
+.stage-btn {
+    flex: 1;
+    padding: 0.42rem 0.7rem;
+    border: none;
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.67rem;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.15s, color 0.15s;
+    font-family: 'Inter', sans-serif;
+    white-space: nowrap;
+}
+
+.stage-btn:hover:not(.active):not(.passed) {
+    background-color: var(--bg-tertiary);
+    color: var(--text-secondary);
+}
+
+/* Passed (stages before active) */
+.stage-btn[data-stage="1"].passed { background: rgba(180,83,9,0.12); color: #fbbf24; }
+.stage-btn[data-stage="2"].passed { background: rgba(234,88,12,0.12); color: #fb923c; }
+.stage-btn[data-stage="3"].passed { background: rgba(99,102,241,0.12); color: var(--accent-light); }
+.stage-btn[data-stage="4"].passed { background: rgba(34,197,94,0.12); color: var(--accent-green); }
+
+/* Active */
+.stage-btn[data-stage="1"].active { background: #92400e; color: #fef3c7; box-shadow: 0 1px 6px rgba(180,83,9,0.4); }
+.stage-btn[data-stage="2"].active { background: #9a3412; color: #ffedd5; box-shadow: 0 1px 6px rgba(234,88,12,0.4); }
+.stage-btn[data-stage="3"].active { background: var(--accent); color: #fff; box-shadow: 0 1px 6px rgba(99,102,241,0.4); }
+.stage-btn[data-stage="4"].active { background: #15803d; color: #dcfce7; box-shadow: 0 1px 6px rgba(34,197,94,0.4); }
+
+/* ==========================================
+   DIARIO DE PRÁCTICA
+   ========================================== */
+
+.diary-section {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.diary-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.85rem;
+}
+
+.diary-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.diary-label::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 0.75em;
+    background-color: var(--accent);
+    border-radius: 2px;
+}
+
+.diary-add-btn {
+    padding: 0.25rem 0.8rem;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    color: var(--text-muted);
+    font-size: 0.73rem;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: border-color 0.15s, color 0.15s;
+}
+
+.diary-add-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent-light);
+}
+
+.diary-new {
+    margin-bottom: 1rem;
+}
+
+.diary-textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 0.75rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    resize: vertical;
+    transition: border-color 0.15s;
+}
+
+.diary-textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.diary-textarea::placeholder { color: var(--text-muted); }
+
+.diary-new-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    justify-content: flex-end;
+}
+
+.diary-save-btn {
+    padding: 0.35rem 1.1rem;
+    background: var(--accent);
+    border: none;
+    border-radius: var(--radius);
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: background-color 0.15s;
+}
+
+.diary-save-btn:hover { background: var(--accent-hover); }
+
+.diary-cancel-btn {
+    padding: 0.35rem 0.9rem;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: background-color 0.15s;
+}
+
+.diary-cancel-btn:hover { background: var(--bg-tertiary); }
+
+.diary-entries {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.diary-empty {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-style: italic;
+    text-align: center;
+    padding: 0.75rem 0;
+}
+
+.diary-entry {
+    padding: 0.85rem 1rem;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius);
+    border-left: 3px solid var(--accent);
+}
+
+.diary-entry-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.4rem;
+}
+
+.diary-entry-date {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    font-family: monospace;
+    letter-spacing: 0.03em;
+}
+
+.diary-entry-text {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    white-space: pre-wrap;
+    margin: 0;
+}
+
+.diary-delete-btn {
+    width: 22px;
+    height: 22px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.15s, color 0.15s;
+    flex-shrink: 0;
+}
+
+.diary-delete-btn:hover {
+    background: rgba(239,68,68,0.15);
+    color: #ef4444;
 }
