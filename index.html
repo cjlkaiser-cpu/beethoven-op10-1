@@ -104,6 +104,7 @@
             <div class="pasaje-tabs">
                 <button class="pasaje-tab active" data-tab="referencia">Referencia</button>
                 <button class="pasaje-tab" data-tab="practica">Práctica</button>
+                <button class="pasaje-tab" data-tab="editor">🎹 Editor</button>
             </div>
 
             <!-- ══════════════════════════════════════
@@ -264,6 +265,10 @@
                                 </button>
                             </div>
                         </div>
+                        <button class="record-btn" id="openEditorBtn" style="border-color:rgba(99,102,241,.5);color:#818cf8" title="Abrir editor de audio profesional">
+                            <span class="record-icon">🎹</span>
+                            <span>Editor</span>
+                        </button>
                         <div class="recorder-active" id="recorderActive" style="display:none">
                             <div class="recording-indicator">
                                 <span class="rec-dot"></span>
@@ -341,6 +346,14 @@
 
             </div><!-- /tab-practica -->
 
+            <!-- ══════════════════════════════════════
+                 TAB: EDITOR
+                 ══════════════════════════════════════ -->
+            <div class="tab-panel hidden" id="tab-editor">
+                <div class="editor-tab-bar" id="editorTabBar"></div>
+                <iframe id="editorFrame" src="test-waveform.html" class="editor-tab-frame" allow="microphone; autoplay"></iframe>
+            </div>
+
             <!-- Score fullscreen overlay (fixed, fuera de los tabs) -->
             <div class="score-overlay" id="scoreOverlay">
                 <img id="scoreOverlayImg" src="" alt="Partitura ampliada">
@@ -371,6 +384,7 @@
         </div>
     </div>
 </div>
+
 
 <script src="js/data.js?v=1"></script>
 <script src="js/app.js?v=6"></script>

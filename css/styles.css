@@ -1507,6 +1507,55 @@ body {
     background: var(--accent-hover);
 }
 
+/* ──────────────────────────────────────────
+   Audio Editor tab (iframe inline)
+   ────────────────────────────────────────── */
+.editor-tab-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    padding-bottom: 0.75rem;
+    min-height: 2rem;
+}
+.editor-load-btn {
+    padding: 0.22rem 0.7rem;
+    background: rgba(99,102,241,.1);
+    border: 1px solid rgba(99,102,241,.35);
+    border-radius: 20px;
+    color: #818cf8;
+    font-size: 0.73rem;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: all .15s;
+}
+.editor-load-btn:hover { background: rgba(99,102,241,.2); border-color: #818cf8; }
+.editor-tab-frame {
+    width: 100%;
+    height: calc(100vh - 240px);
+    min-height: 700px;
+    border: none;
+    border-radius: 8px;
+    background: #0f172a;
+}
+
+/* Edit button on recording items */
+.edit-recording-btn {
+    padding: 0.2rem 0.5rem;
+    background: rgba(99,102,241,.1);
+    border: 1px solid rgba(99,102,241,.35);
+    border-radius: 5px;
+    color: #818cf8;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all .15s;
+}
+.edit-recording-btn:hover { background: rgba(99,102,241,.2); border-color: #818cf8; }
+
 /* ==========================================
    TABS REFERENCIA / PRÁCTICA
    ========================================== */

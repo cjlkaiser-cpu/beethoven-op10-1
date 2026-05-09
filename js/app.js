@@ -706,12 +706,22 @@ async function renderRecordingsList(pasajeId) {
                     <div class="recording-date">${date}</div>
                 </div>
                 <div class="recording-actions">
+                    <button class="edit-recording-btn" data-recording-id="${rec.recordingId}" title="Abrir en editor de audio">✏</button>
                     <button class="play-btn" data-recording-id="${rec.recordingId}" title="Reproducir">▶</button>
                     <button class="delete-recording-btn" data-recording-id="${rec.recordingId}" title="Eliminar">✕</button>
                 </div>
             </div>
         `;
     }).join('');
+
+    container.querySelectorAll('.edit-recording-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            const recordingId = e.currentTarget.dataset.recordingId;
+            const recordings = await getRecordingsForPasaje(pasajeId);
+            const rec = recordings.find(r => r.recordingId === recordingId);
+            if (rec?.audio) openEditor(rec.audio, rec.name);
+        });
+    });
 
     container.querySelectorAll('.play-btn').forEach(btn => {
         btn.addEventListener('click', async (e) => {
@@ -859,6 +869,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         setupVideoToggles();
         setupStageSelector();
         setupDiary();
+        setupEditorOverlay();
         updateProgress();
 
     } catch (error) {
@@ -973,6 +984,7 @@ async function loadPasaje(index) {
     expandSection(pasaje.seccion);
 
     loadTempoHistory(index).then(renderTempoHistory).catch(() => {});
+    if (currentTab === 'editor') renderEditorBar(index);
 
     const canvas = document.getElementById('annotationCanvas');
     const img = elements.manuscriptImg;
@@ -1021,6 +1033,7 @@ function setupEventListeners() {
 
     elements.recordBtn.addEventListener('click', startRecording);
     elements.stopBtn.addEventListener('click', stopRecording);
+    document.getElementById('openEditorBtn')?.addEventListener('click', () => openEditor(null, null));
     elements.recordVideoBtn.addEventListener('click', startVideoRecording);
     elements.stopVideoBtn.addEventListener('click', stopVideoRecording);
 
@@ -1776,6 +1789,9 @@ function switchTab(name) {
     if (name === 'practica') {
         requestAnimationFrame(resizeAnnotationCanvas);
     }
+    if (name === 'editor') {
+        renderEditorBar(currentPasaje);
+    }
 }
 
 function resizeAnnotationCanvas() {
@@ -1829,6 +1845,90 @@ function setupVideoToggles() {
                     </iframe>`;
                 }
             }
+        });
+    });
+}
+
+// ==========================================
+// AUDIO EDITOR TAB
+// ==========================================
+
+let editorFrameReady = false;
+let editorPendingLoad = null;
+
+function setupEditorOverlay() {
+    const frame = document.getElementById('editorFrame');
+
+    frame.addEventListener('load', () => {
+        editorFrameReady = true;
+        if (editorPendingLoad) {
+            sendBlobToEditor(editorPendingLoad.blob, editorPendingLoad.name);
+            editorPendingLoad = null;
+        }
+    });
+
+    window.addEventListener('message', async e => {
+        if (!e.data || typeof e.data !== 'object') return;
+
+        if (e.data.type === 'ready') {
+            editorFrameReady = true;
+            if (editorPendingLoad) {
+                sendBlobToEditor(editorPendingLoad.blob, editorPendingLoad.name);
+                editorPendingLoad = null;
+            }
+        }
+
+        // Recording done in editor → save to pasaje + refresh bar
+        if (e.data.type === 'recording-done' && e.data.blob instanceof Blob) {
+            await saveRecordingToDB(currentPasaje, e.data.blob, e.data.name);
+            await renderRecordingsList(currentPasaje);
+            await renderEditorBar(currentPasaje);
+            showNotification('Grabación guardada en el pasaje ✓', 'success');
+        }
+
+        // Exported clip → save as new recording
+        if (e.data.type === 'export-clip' && e.data.blob instanceof Blob) {
+            await saveRecordingToDB(currentPasaje, e.data.blob, e.data.name || 'clip.wav');
+            await renderRecordingsList(currentPasaje);
+            await renderEditorBar(currentPasaje);
+            showNotification('Clip guardado en el pasaje ✓', 'success');
+        }
+    });
+}
+
+function sendBlobToEditor(blob, name) {
+    document.getElementById('editorFrame').contentWindow.postMessage({ type: 'load', blob, name }, '*');
+}
+
+function openEditor(blob, name) {
+    switchTab('editor');
+    if (blob) {
+        if (editorFrameReady) {
+            sendBlobToEditor(blob, name);
+        } else {
+            editorPendingLoad = { blob, name };
+        }
+    }
+}
+
+async function renderEditorBar(pasajeId) {
+    const bar = document.getElementById('editorTabBar');
+    if (!bar) return;
+    const recordings = await getRecordingsForPasaje(pasajeId);
+    if (!recordings.length) {
+        bar.innerHTML = '<span style="font-size:.75rem;color:#64748b;font-style:italic">Graba desde el editor o carga una grabación desde la pestaña Práctica ✏</span>';
+        return;
+    }
+    bar.innerHTML =
+        '<span style="font-size:.72rem;color:#64748b;flex-shrink:0">Cargar grabación:</span>' +
+        recordings.map(r =>
+            `<button class="editor-load-btn" data-id="${r.recordingId}" title="${r.date}">${r.name}</button>`
+        ).join('');
+    bar.querySelectorAll('.editor-load-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const recs = await getRecordingsForPasaje(pasajeId);
+            const rec = recs.find(r => r.recordingId === btn.dataset.id);
+            if (rec?.audio) sendBlobToEditor(rec.audio, rec.name);
         });
     });
 }
